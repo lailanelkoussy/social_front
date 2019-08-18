@@ -1,0 +1,12 @@
+{
+  "name": "My PWA Social Media",
+  "short_name": "SocialPhoto",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ccc",
+  "theme_color": "#5FAAE5",
+  "icons": [
+
+  ]
+}

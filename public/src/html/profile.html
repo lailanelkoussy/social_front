@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="../js/sessionCheck.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="../js/uploadPhoto.js"></script>
+    <script src="../js/search.js"></script>
+    <title>Profile</title>
+</head>
+<body onload="checkIfLoggedOut(); loadProfile()">
+<div id="internalServerError"></div>
+<nav class="navbar sticky-top navbar-expand-md navbar-light bg-white" style="padding-bottom: 0; padding-top: 0;">
+    <img class="navbar-brand" src="../images/icons/logo_50x50.png">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+                <a class="nav-link" href="homepage.html">Home</a>
+            </li>
+            <li class="nav-item" id="profileLi">
+                <a class="nav-link" id="profileLiA" href="#" onclick="loadPersonalProfile()">Profile </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Groups</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="logOut()">Log Out</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <div class="dropdown">
+                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    <img src="../images/logos/images.png"
+                         style="border-radius: 50%;" alt="..">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="px-4 py-3">
+                        <h6 class="dropdown-header text-center" style="font-size: 1rem">Upload photo</h6>
+                        <div class="form-group" style=" padding-top:0.5rem; align-items: center; display: flex;">
+                            <input type="file" class="form-control-file" id="uploadedPhoto" accept="image/*"
+                                   style="display: none;"/>
+                            <input type="button" value="Choose Photo"
+                                   onclick="document.getElementById('uploadedPhoto').click();"/>
+                        </div>
+                        <div class="form-group" style=" padding-top:0.5rem;">
+                            <label for="photoName">Photo Name</label>
+                            <input type="text" class="form-control" id="photoName"
+                                   placeholder="mycat" oninput="validatePhotoName()">
+                            <div class="invalid-feedback" id="photoNameFeedback">
+                            </div>
+                        </div>
+                        <div class="form-group" style=" padding-top:0.5rem; padding-bottom: 0.5rem;">
+                            <label for="hashtagName">Hashtag</label>
+                            <input type="text" class="form-control" id="hashtagName"
+                                   placeholder="cute" oninput="validateHashtagName()">
+                            <div class="invalid-feedback" id="hashtagNameFeedback">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="validateAll()">Upload</button>
+                    </div>
+                </div>
+            </div>
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+        </form>
+    </div>
+</nav>
+<div id="profileContainer" class="container-fluid">
+    <div class="row ">
+        <div class="col-md-5 offset-md-3">
+            <div class="row mt-2 text-center" id="userRow">
+                <div class="col-4" id="userCol1">
+                    <div id="innerClassContainer" class="container">
+                        <div class="row" id="nameRow">
+                            <div class="col" id="nameCol">
+                                <h6 id="name" style="margin-bottom:0;"></h6>
+                            </div>
+                        </div>
+                        <div class="row" id="usernameRow">
+                            <div class="col" id="usernameCol">
+                                <p id="username" class="text-muted" style="margin-bottom:0;"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-4" id="userCol2">
+                    <p id="posts" style="margin-bottom:0;"></p>
+                </div>
+                <div class="col-4" id="userCol3">
+                    <p id="following" style="margin-bottom:0;"></p>
+                </div>
+
+            </div>
+            <div class="row mt-2 text-center" id="followButtonRow">
+                <div class="col-4 offset-md-4" id="followButtonCol">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

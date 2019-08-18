@@ -1,0 +1,16 @@
+{
+  "name": "social-media-pwa",
+  "version": "1.0.0",
+  "description": "A photo sharing social media",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -c-1 -p 8081"
+  },
+  "keywords": [
+    "pwa"
+  ],
+  "author": "Laila Nasser ElKoussy",
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  }
+}

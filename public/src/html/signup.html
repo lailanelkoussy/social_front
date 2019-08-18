@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="../js/signUpValidation.js"></script>
+
+    <title>Sign Up</title>
+</head>
+<body>
+<div class="container">
+    <div class="row mt-2 ">
+        <div class="col-3"></div>
+        <div class="col-lg-7 align-self-center">
+            <div class="card">
+                <h5 class="card-header">Sign Up</h5>
+                <div class="card-body">
+                    <form class="needs-validation" id="signUpForm">
+                        <div class="form-group required">
+                            <label for="inputEmail1" class="control-label">Email address</label>
+                            <input type="email" class="form-control" id="inputEmail1"
+                                   aria-describedby="emailHelp" placeholder="john@example.com"
+                                   oninput="validateEmail()">
+                            <div class="invalid-feedback" id="emailFeedback">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-4">
+                                <div class="form-group required">
+                                    <label for="inputFirstName" class="control-label">First Name</label>
+                                    <input type="text" class="form-control" id="inputFirstName"
+                                           aria-describedby="emailHelp" placeholder="First Name"
+                                           oninput="validateFirstName()">
+                                    <div class="invalid-feedback" id="firstNameFeedback">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 ">
+                                <div class="form-group ">
+                                    <label for="inputMiddleName">Middle Name</label>
+                                    <input type="text" class="form-control" id="inputMiddleName"
+                                           aria-describedby="emailHelp" placeholder="Middle Name"
+                                           oninput="validateMiddleName()">
+                                    <div class="invalid-feedback" id="middleNameFeedback">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group required">
+                                    <label for="inputLastName" class="control-label">Last Name</label>
+                                    <input type="text" class="form-control" id="inputLastName"
+                                           aria-describedby="emailHelp" placeholder="Last Name"
+                                           oninput="validateLastName()">
+                                    <div class="invalid-feedback" id="lastNameFeedback">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="inputUsername" class="control-label">Username</label>
+                            <input type="text" class="form-control" id="inputUsername"
+                                   aria-describedby="emailHelp" placeholder="Username"
+                                   oninput="validateUsername(false)">
+                            <div class="invalid-feedback" id="usernameFeedback">
+                            </div>
+                            <small id="usernameHelp" class="form-text text-muted">Username needs to be between 3 to 15
+                                characters, can contain letters, digits, underscores and hyphens.
+                            </small>
+                        </div>
+                        <div class="form-group required">
+                            <label for="inputPassword1" class="control-label">Password</label>
+                            <input class="form-control" data-content="hello" data-toggle="popover" data-html="true"
+                                   data-trigger="hover focus" id="inputPassword1" oninput="validatePassword()"
+                                   onfocus=""
+                                   placeholder="Password" type="password">
+                            <small id="passwordHelp" class="form-text text-muted">Password must be between 8 and 16
+                                characters and
+                                contain at
+                                least one upper case, lower case, special character and digit.
+                            </small>
+                            <div class="invalid-feedback" id="passwordFeedback">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="inputConfirmPassword"
+                                   placeholder="Password" oninput="validateConfirmPassword()">
+                            <div class="invalid-feedback" id="confirmPasswordFeedback">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputBirthday">Birthday</label>
+                            <input type="text" class="form-control" id="inputBirthday"
+                                   aria-describedby="emailHelp" placeholder="yyyy-mm-dd"
+                                   oninput="validateBirthday()">
+                            <div class="invalid-feedback" id="birthdayFeedback">
+                                Required field
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="validateAll()">Sign up</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-3"></div>
+        <div class="col-lg-7">
+            <div id="signUpAlert"></div>
+        </div>
+    </div>
+    <div class="row mt-2 ">
+        <div class="col-3"></div>
+        <div class="col-lg-7 align-self-center">
+            <div class="card">
+                <div class="card-body">
+                    Already have an account?
+                    <a href="../../index.html" class="card-link">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let password = document.getElementById("inputPassword1");
+        $('[data-toggle="popover"]').popover();
+        password.setAttribute("data-content", popoverContent());
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
