@@ -6,22 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
     <script src="../js/sessionCheck.js"></script>
     <script src="../js/homepage.js"></script>
     <script src="../js/profile.js"></script>
     <script src="../js/uploadPhoto.js"></script>
     <script src="../js/search.js"></script>
     <script src="../js/groups.js"></script>
+    <script src="../js/common.js"></script>
     <title>Home</title>
 </head>
-<body onload="checkIfLoggedOut(); getInitialFeed()">
-<nav class="navbar sticky-top navbar-expand-md navbar-light bg-white" style="padding-bottom: 0; padding-top: 0;">
-    <img class="navbar-brand" src="../images/icons/logo_50x50.png">
+<body onload="checkIfLoggedOut(); getInitialFeed(); makeGroupDropDown()">
+<nav class="navbar navbar-expand-md sticky-top navbar-light bg-white">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -38,40 +45,19 @@
                 <a class="nav-link" href="groups.html">Groups</a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link" href="#" onclick="logOut()">Log Out</a>
+                <a class="nav-link" href="#" onclick="logOut()">Log out</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
+            <button type="button" class="btn" data-toggle="modal" data-target="#createGroupModal">
+                <img src="../images/logos/create-group-button.png" alt="..">
+            </button>
             <div class="dropdown">
-                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    <img src="../images/logos/images.png"
-                         style="border-radius: 50%;" alt="..">
+                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="modal" data-target="#photoUploadModal"
+                        aria-haspopup="true" aria-expanded="false" style=" margin-right: 1rem;">
+                    <img src="../images/logos/add-picture.png"
+                         alt="..">
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <div class="px-4 py-3">
-                        <h6 class="dropdown-header text-center" style="font-size: 1rem">Upload photo</h6>
-                        <div class="form-group" style=" padding-top:0.5rem; align-items: center; display: flex;">
-                            <input type="file" class="form-control-file" id="uploadedPhoto" accept="image/*" style="display: none;" />
-                            <input type="button" value="Choose Photo" onclick="document.getElementById('uploadedPhoto').click();"/>
-                        </div>
-                        <div class="form-group" style=" padding-top:0.5rem;">
-                            <label for="photoName">Photo Name</label>
-                            <input type="text" class="form-control" id="photoName"
-                                   placeholder="mycat" oninput="validatePhotoName()">
-                            <div class="invalid-feedback" id="photoNameFeedback">
-                            </div>
-                        </div>
-                        <div class="form-group" style=" padding-top:0.5rem; padding-bottom: 0.5rem;">
-                            <label for="hashtagName">Hashtag</label>
-                            <input type="text" class="form-control" id="hashtagName"
-                                   placeholder="cute" oninput="validateHashtagName()">
-                            <div class="invalid-feedback" id="hashtagNameFeedback">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="validateAll()">Upload</button>
-                    </div>
-                </div>
             </div>
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery">
             <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="search()">Search</button>
@@ -80,11 +66,114 @@
 </nav>
 <div id="internalServerError"></div>
 
+
+<div class="modal fade" id="photoUploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload photo</h5>
+                <button type="button" class="close" data-dismiss="modal" onclick="refresh()"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row" style=" align-items: center; vertical-align: middle;">
+                        <div class="col-md-4" style=" align-items: center;" id="buttonCol">
+                            <div class="form-group" style=" align-items: center; display: flex;">
+                                <input type="file" class="form-control-file" id="uploadedPhoto" accept="image/*"
+                                       style="display: none;" onchange="previewPhoto(this)"/>
+                                <input type="button" value="Choose Photo"
+                                       onclick="document.getElementById('uploadedPhoto').click();"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="middleCol"></div>
+                        <div class="col-md-6" style=" align-items: center;" id="imgCol">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group" style=" padding-top:0.5rem;">
+                        <label for="photoName">Photo Name</label>
+                        <input type="text" class="form-control" id="photoName"
+                               placeholder="mycat" oninput="validatePhotoName()">
+                        <div class="invalid-feedback" id="photoNameFeedback">
+                        </div>
+                    </div>
+                    <div class="form-group" style=" padding-top:0.5rem; padding-bottom: 0.5rem;">
+                        <label for="hashtagName">Hashtag</label>
+                        <input type="text" class="form-control" id="hashtagName"
+                               placeholder="cute" oninput="validateHashtagName()">
+                        <div class="invalid-feedback" id="hashtagNameFeedback">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Upload to group?</label>
+                            </div>
+                            <select class="custom-select" id="inputGroupSelect01">
+                                <option selected value="0">Upload to Profile</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary"  id="uploadButton" onclick="validateAll()">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container" id="homepageContainer">
 
 </div>
+<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group required">
+                        <label for="inputGroupName" class="control-label">Name:</label>
+                        <input type="text" class="form-control" id="inputGroupName" aria-describedby="emailHelp" oninput="validateNewName(false)" placeholder="Pick a name for your group">
+                        <div class="invalid-feedback" id="groupNameFeedback">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDescription" class="control-label">Description: </label>
+                        <input type="text" class="form-control" id="inputDescription" placeholder="Describe what your group is about...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitGroupCreation()">Create Group</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
+<script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('../../sw.js');
+        });
+    }
+</script>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 </body>
 </html>

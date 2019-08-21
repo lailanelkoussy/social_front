@@ -27,10 +27,8 @@ function generateUserDisplay(userResults) {
 
     let userTab = document.getElementById("userTab");
 
-
     if (userResults.length === 0) {
         userTab.innerHTML = "<div class='row'style='text-align: center; padding:2rem;'><div class='col'><h5>No users found</h5></div> </div>"
-
 
     } else {
         let tableBody = document.getElementById("tableBody");
@@ -40,34 +38,31 @@ function generateUserDisplay(userResults) {
                 let item = document.createElement("tr");
                 item.setAttribute("onclick", "switchToProfile(" + userResults[i]["userId"] + ")");
                 tableBody.appendChild(item);
-                item.innerHTML = "<td style=\"text-align:center\">" + userResults[i]["firstName"] + " " + userResults[i]["lastName"] + "</td>"
-                    + "<td style=\"text-align:center\">" + userResults[i]["username"] + "</td>";
+                item.innerHTML = "<td style=\"text-align:center\">" +
+                    userResults[i]["firstName"][0].toUpperCase() + userResults[i]["firstName"].slice(1) + " "
+                    + userResults[i]["lastName"][0].toUpperCase() + userResults[i]["lastName"].slice(1) + "</td>"
+                    + "<td style=\"text-align:center;\">" + userResults[i]["username"] + "</td>";
             }
         }
     }
-
 }
 
 function generateGroupDisplay(groupResults) {
     let groupTab = document.getElementById("groupTab");
     if (groupResults.length === 0) {
-        groupTab.innerHTML = "<div class='row'style='text-align: center; padding:2rem;'><div class='col'><h5>No groups found</h5></div> </div>"
-
-
-
+        groupTab.innerHTML = "<div class='row' style='text-align: center; padding:2rem;'><div class='col'><h5>No groups found</h5></div> </div>";
     } else {
         let tableBody = document.getElementById("groupTableBody");
         for (let i = 0; i < groupResults.length; i++) {
             if (groupResults[i]["userId"] !== localStorage.getItem("userId")) {
                 let item = document.createElement("tr");
-                // item.setAttribute("onclick", "switchToProfile(" + userResults[i]["userId"] + ")");
+                item.setAttribute("onclick", "switchToGroup(" + groupResults[i]["id"] + ")");
                 tableBody.appendChild(item);
                 item.innerHTML = "<td style=\"text-align:center\">" + groupResults[i]["name"] + "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["description"] + "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["members"].length + "</td>";
             }
         }
-
     }
 }
 
@@ -133,7 +128,6 @@ function getPhotoSearch(query) {
         })
 
 }
-
 
 function getUser(id) {
     let url = "http://localhost:8762/userms/users/" + id;
@@ -212,7 +206,7 @@ function generatePhotoDisplay(photoResults) {
                 let smallCol = document.createElement("div");
                 smallCol.classList.add("col-lg");
                 smallRow.appendChild(smallCol);
-                makeElementCard(photoResults[i], smallCol);
+                makeSearchElementCard(photoResults[i], smallCol);
                 switch (i % 3) {
                     case 0: //col1
                         col1.appendChild(smallContainer);
@@ -263,7 +257,7 @@ function getTimeStamp(timestamp) {
 
 }
 
-function makeElementCard(imageResponse, smallCol) {
+function makeSearchElementCard(imageResponse, smallCol) {
     let card = document.createElement("div");
     card.classList.add("card");
     let img = document.createElement("img");
@@ -287,7 +281,7 @@ function makeElementCard(imageResponse, smallCol) {
         if (imageResponse["groupId"] !== 0) {
             groupLink = document.createElement("a");
             groupLink.setAttribute("id", "groupLink");
-            groupLink.setAttribute("onclick", "switchToGroup(" + data["groupId"] + ");");
+            groupLink.setAttribute("onclick", "switchToGroup(" + imageResponse["groupId"] + ");");
             groupLink.setAttribute("href", "#");
             groupLink.setAttribute("style", "margin-left:0;");
             groupLink.classList.add("card-link", "text-muted");

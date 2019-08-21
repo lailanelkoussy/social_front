@@ -1,9 +1,17 @@
 function loadProfile() {
     let id = localStorage.getItem("profileId");
     let container = document.getElementById("profileContainer");
+    let load = document.createElement("div");
+    load.innerHTML = "<div class=\"d-flex justify-content-center\">\n" +
+        "  <div class=\"spinner-border\" role=\"status\">\n" +
+        "    <span class=\"sr-only\">Loading...</span>\n" +
+        "  </div>\n" +
+        "</div>";
+    container.appendChild(load);
 
     getUser(id).then(userData => {
         loadUserPhotos(id).then(userPhotos => {
+            container.removeChild(load);
             let bigRow = document.createElement("div");
             bigRow.classList.add("row");
             let col1 = document.createElement("div");
@@ -79,20 +87,20 @@ function loadProfile() {
 
 function internalServerError(error) {
     console.log(error);
-    let container = document.getElementById("internalServerError");
-    container.innerHTML = "<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">\n" +
-        "  <div class=\"toast-header\">\n" +
-        "    <img src=\"...\" class=\"rounded mr-2\" alt=\"...\">\n" +
-        "    <strong class=\"mr-auto\">Error</strong>\n" +
-        "    <small>11 mins ago</small>\n" +
-        "    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">\n" +
-        "      <span aria-hidden=\"true\">&times;</span>\n" +
-        "    </button>\n" +
-        "  </div>\n" +
-        "  <div class=\"toast-body\">\n" +
-        "    Uh oh! It seems like there has been some error, some content might not display the way it should." +
-        "  </div>\n" +
-        "</div>"
+    // let container = document.getElementById("internalServerError");
+    // container.innerHTML = "<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">\n" +
+    //     "  <div class=\"toast-header\">\n" +
+    //     "    <img src=\"...\" class=\"rounded mr-2\" alt=\"...\">\n" +
+    //     "    <strong class=\"mr-auto\">Error</strong>\n" +
+    //     "    <small>11 mins ago</small>\n" +
+    //     "    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">\n" +
+    //     "      <span aria-hidden=\"true\">&times;</span>\n" +
+    //     "    </button>\n" +
+    //     "  </div>\n" +
+    //     "  <div class=\"toast-body\">\n" +
+    //     "    Uh oh! It seems like there has been some error, some content might not display the way it should." +
+    //     "  </div>\n" +
+    //     "</div>"
 
 }
 
@@ -125,7 +133,7 @@ function userCardContainer(userData, numberOfUserPhotos, userFollowing) {
         followCol.appendChild(followButton);
         getUserFollowing(localStorage.getItem("userId")).then(follow => {
             let followBool = false;
-            for (let i = 0; i<follow.length; i++ )
+            for (let i = 0; i < follow.length; i++)
                 if (follow[i]["userId"] === userData["userId"]) { //if following
                     followBool = true;
                 }
@@ -163,7 +171,6 @@ function loadPersonalProfile() {
 }
 
 function followUser() {
-    console.log("followed");
     let id = localStorage.getItem("profileId");
     let url = "http://localhost:8762/userms/users/" + localStorage.getItem("userId");
     let userList = {
@@ -242,6 +249,7 @@ function getUser(id) {
             internalServerError(error);
         })
 }
+
 function getUserFollowing(id) {
     let url = "http://localhost:8762/userms/users/" + id + "/following";
     return fetch(url, {

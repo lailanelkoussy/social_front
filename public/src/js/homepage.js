@@ -1,7 +1,14 @@
 function getInitialFeed() {
     localStorage.setItem("pageNumber", "0");
     localStorage.setItem("pageSize", "2");
+    let container = document.getElementById("homepageContainer");
+    container.innerHTML = "<div class=\"d-flex justify-content-center\">\n" +
+        "  <div class=\"spinner-border\" role=\"status\">\n" +
+        "    <span class=\"sr-only\">Loading...</span>\n" +
+        "  </div>\n" +
+        "</div>";
     loadFromAPI().then(response => {
+            container.innerHTML = "";
             addElementsToPage(response);
         }
     )

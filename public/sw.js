@@ -9,5 +9,18 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
     new RegExp('http://localhost:8762/'),
-    new workbox.strategies.StaleWhileRevalidate()
+    new workbox.strategies.NetworkFirst()
+);
+
+const queue = new workbox.backgroundSync.Queue('myQueueName');
+const bgSyncPlugin = new workbox.backgroundSync.Plugin('myQueueName', {
+    maxRetentionTime: 60 //(specified in minutes)
+});
+
+workbox.routing.registerRoute(
+    new RegExp('http://localhost:8762/'),
+    new workbox.strategies.NetworkOnly({
+        plugins: [bgSyncPlugin]
+    }),
+    'POST'
 );

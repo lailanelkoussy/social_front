@@ -175,7 +175,6 @@ function validateUsername(bool) {
                 return false;
             }
         });
-
     }
 }
 
