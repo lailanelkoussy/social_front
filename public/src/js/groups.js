@@ -9,6 +9,7 @@ function loadGroup() {
     makeGroupInfoBar(id);
     addMembersModal();
     getGroupContent(id).then(groupPhotos => {
+
         let bigRow = document.createElement("div");
         bigRow.classList.add("row");
         let col1 = document.createElement("div");
@@ -28,47 +29,51 @@ function loadGroup() {
         bigRow.appendChild(col3);
 
         container.appendChild(bigRow);
-        for (let i = 0; i < groupPhotos.length; i++) {
-            try {
-                let smallContainer = document.createElement("div");
-                smallContainer.classList.add("container");
-                smallContainer.setAttribute("style", "    padding-right: 1%;" +
-                    " padding-left: 1%;");
-                let smallRow = document.createElement("div");
-                smallRow.classList.add("row", "mt-4");
-                smallContainer.appendChild(smallRow);
-                let smallCol = document.createElement("div");
-                smallCol.classList.add("col-lg");
-                smallRow.appendChild(smallCol);
+        if (groupPhotos.length === 0) {
+            bigRow.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; margin-left:30%;'>This group is empty!</h1>";
+        } else {
 
-                makeGroupElementCard(groupPhotos[i], smallCol);
-                let card = document.createElement("div");
-                card.classList.add("card");
-                smallCol.appendChild(card);
-                switch (i % 3) {
-                    case 0: //col1
-                        col1.appendChild(smallContainer);
-                        break;
-                    case 1: //col2
-                        col2.appendChild(smallContainer);
-                        break;
-                    case 2: //col3
-                        col3.appendChild(smallContainer);
-                        break;
+            for (let i = groupPhotos.length - 1; i > -1; i--) {
+                try {
+                    let smallContainer = document.createElement("div");
+                    smallContainer.classList.add("container");
+                    smallContainer.setAttribute("style", "    padding-right: 1%;" +
+                        " padding-left: 1%;");
+                    let smallRow = document.createElement("div");
+                    smallRow.classList.add("row", "mt-4");
+                    smallContainer.appendChild(smallRow);
+                    let smallCol = document.createElement("div");
+                    smallCol.classList.add("col-lg");
+                    smallRow.appendChild(smallCol);
+
+                    makeGroupElementCard(groupPhotos[i], smallCol);
+                    let card = document.createElement("div");
+                    card.classList.add("card");
+                    smallCol.appendChild(card);
+                    switch (i % 3) {
+                        case 0: //col1
+                            col1.appendChild(smallContainer);
+                            break;
+                        case 1: //col2
+                            col2.appendChild(smallContainer);
+                            break;
+                        case 2: //col3
+                            col3.appendChild(smallContainer);
+                            break;
+                    }
+                } catch (e) {
+
                 }
-            } catch (e) {
-
             }
         }
 
     })
         .catch(error => {
                 internalServerError(error);
+                window.location.href = "../html/groups.html";
             }
         )
-        .catch(error => {
-            internalServerError(error);
-        })
+
 }
 
 function loadPersonalGroups() {
@@ -80,8 +85,8 @@ function loadPersonalGroups() {
                 tableBody.appendChild(item);
                 item.innerHTML = "<td style=\"text-align:center\" onclick='switchToGroup(" + groupResults[i]["id"] + ")'>"
                     + "<a href='#' style='color:black; text-decoration: none; vertical-align: center;'>" + groupResults[i]["name"][0].toUpperCase() + groupResults[i]["name"].slice(1) + "</a>" + "</td>"
-                    + "<td style=\"text-align:center; vertical-align: center;\">" + groupResults[i]["description"] + "</td>"
-                    + "<td style=\"text-align:center; vertical-align: center\">" + groupResults[i]["members"].length + " members" + "</td>" +
+                    + "<td style=\"text-align:center; vertical-align: center;\" onclick='switchToGroup(" + groupResults[i]["id"] + ")'>" + groupResults[i]["description"] + "</td>"
+                    + "<td style=\"text-align:center; vertical-align: center\" onclick='switchToGroup(" + groupResults[i]["id"] + ")'>" + groupResults[i]["members"].length + " members" + "</td>" +
                     "<td id='joinButtonCol" + groupResults[i]["id"] + "'>" + "</td>";
                 if (groupResults[i]["creatorId"].toString() === localStorage.getItem("userId").toString())
                     loadDeleteButton(groupResults[i]["id"], groupResults[i]["id"]);
@@ -108,13 +113,14 @@ function makeGroupInfoBar(id) {
         members.setAttribute("onclick", "showMembers(false)");
         members.setAttribute("data-toggle", "modal");
         members.setAttribute("data-target", "#membersModal");
+        members.setAttribute("style", "font-weight:600;")
 
         members.innerHTML = info["members"].length + " members";
         getUserInfo(info["creatorId"]).then(userInfo => {
             let creator = document.getElementById("creator");
             creator.setAttribute("href", "#");
             creator.classList.add("card-link");
-            creator.setAttribute("style", "color:black;");
+            creator.setAttribute("style", "color:black; font-weight:600;");
             creator.innerHTML = "Created by " + userInfo["username"];
             creator.setAttribute("onclick", "switchToProfile(" + userInfo["userId"] + ");")
 
@@ -148,6 +154,11 @@ function makeGroupInfoBar(id) {
                     loadJoinButton();
                     setIfMember(false)
                 }
+
+                if (!isAMember()) {
+                    let button = document.getElementById("dropdownMenuButton");
+                    button.setAttribute("style", "display: none;");
+                }
             }
 
             getGroupTags(id).then(tags => {
@@ -157,6 +168,7 @@ function makeGroupInfoBar(id) {
                     col.appendChild(tag);
                     tag.setAttribute("href", "#");
                     tag.classList.add("badge", "badge-secondary");
+                    tag.setAttribute("onclick", "searchForPhotos(\"" + tags[i] + "\")");
                     tag.setAttribute("style", "margin-left:0.25rem;");
                     tag.innerHTML = "#" + tags[i];
                 }
@@ -169,6 +181,11 @@ function makeGroupInfoBar(id) {
     })
 }
 
+function searchForPhotos(hashtagName) {
+    localStorage.setItem("search", hashtagName);
+    window.location.href = "../html/searchResults.html";
+}
+
 function loadRequestedButton() {
     let buttonCol = document.getElementById("joinButtonCol");
     buttonCol.innerHTML = "<button type=\"button\" class=\"btn btn-primary btn-md\" disabled>Requested</button>"
@@ -176,6 +193,7 @@ function loadRequestedButton() {
 
 function loadLeaveButton(id, idOfCol = "") {
     let buttonCol = document.getElementById("joinButtonCol" + idOfCol);
+    buttonCol.innerHTML = "";
     let button = document.createElement("button");
     buttonCol.appendChild(button);
     button.setAttribute("type", "button");
@@ -189,6 +207,7 @@ function loadLeaveButton(id, idOfCol = "") {
 
 function loadJoinButton() {
     let buttonCol = document.getElementById("joinButtonCol");
+    buttonCol.innerHTML = "";
     let button = document.createElement("button");
     buttonCol.appendChild(button);
     button.setAttribute("type", "button");
@@ -265,15 +284,14 @@ function leaveGroup(id, bool = true) {
         referrer: 'no-referrer',
         method: 'DELETE'
     }).then(response => {
-        setIfMember(false);
         if (!bool)
-            loadLeftButton(id);
-        else loadJoinButton();
+            refresh();
+        else {
+            setIfMember(false);
+            loadJoinButton();
+        }
+
     })
-}
-
-function loadLeftButton(id) {
-
 }
 
 function isAMember() {
@@ -318,7 +336,20 @@ function makeGroupElementCard(imageResponse, col) {
     let img = document.createElement("img");
     img.setAttribute("src", "../images/" + imageResponse["name"]);
     img.classList.add("img-fluid", "rounded", "card-img-top");
-    card.appendChild(img);
+    if (isCreator() || imageResponse["userId"].toString() === localStorage.getItem("userId")) {
+        let button = document.createElement("button");
+        button.classList.add("btn");
+        button.setAttribute("type", "button");
+        button.setAttribute("data-toggle", "modal");
+        button.setAttribute("data-target", "#editPhotoModal");
+        button.setAttribute("style", "padding:0;");
+        button.setAttribute("data-src", "../images/" + imageResponse["name"]);
+        button.setAttribute("data-id", imageResponse["id"]);
+        button.appendChild(img);
+        card.appendChild(button);
+    } else {
+        card.appendChild(img);
+    }
     let timestamp = document.createElement("small");
     timestamp.innerHTML = getTimeStamp(imageResponse["timeStamp"]);
     let userLink;
@@ -479,7 +510,7 @@ function makeCreatorSideBar() {
         "        <div class=\"sidebar-heading\">Manage Group</div>\n" +
         "        <div class=\"list-group list-group-flush\">\n" +
         "            <a href=\"#\" class=\"list-group-item list-group-item-action \"  onclick='showMembers(true)' data-toggle=\"modal\" data-target=\"#membersModal\">Manage Members</a>\n" +
-        "            <a href=\"#\" class=\"list-group-item list-group-item-action \" onclick='showRequests()' data-toggle=\"modal\" data-target=\"#requestModal\" > Manage Requests</a>\n" +
+        "            <a href=\"#\" class=\"list-group-item list-group-item-action \" onclick='showRequests()' data-toggle=\"modal\" data-target=\"#requestModal\" > Manage Requests<span style='margin-left: 0.5rem;' class=\"badge badge-primary\" id='requestBadge'></span></a>\n" +
         "            <a href=\"#\" class=\"list-group-item list-group-item-action \" data-toggle=\"modal\" data-target=\"#changeNameModal\">Rename Group</a>\n" +
         "            <a href=\"#\" class=\"list-group-item list-group-item-action \" data-toggle=\"modal\" data-target=\"#descriptionModal\">Change Description</a>\n" +
         "        </div>\n" +
@@ -499,36 +530,37 @@ function makeRemoveUserButton(id) {
     return "<button type=\"button\" id='removeButton" + id + "' class=\"btn btn-outline-danger\" onclick='removeUser(" + id + ")'>Remove</button>";
 }
 
-function showMembers(bool){
-    getGroupInfo(localStorage.getItem("groupId")).then(group =>{
-        getMembers(group["members"]).then(members => {
-            localStorage.setItem("members", JSON.stringify(members));
-            let tableBody = document.getElementById("memberTable");
-            tableBody.innerHTML = "";
+function showMembers(bool) {
+    getGroupInfo(localStorage.getItem("groupId")).then(group => {
+        let members = group["members"];
+        localStorage.setItem("members", JSON.stringify(members));
+        let tableBody = document.getElementById("memberTable");
+        tableBody.innerHTML = "";
+        getMembers(members).then(memberUsersInfo => {
+
             if (bool.toString() === "true") { //if from manage
-                for (let i = 0; i < members.length; i++) {
-                    if (members[i]["userId"].toString() !== localStorage.getItem("userId").toString()) {
+                for (let i = 0; i < memberUsersInfo.length; i++) {
+                    if (memberUsersInfo[i]["userId"].toString() !== localStorage.getItem("userId").toString()) {
                         let item = document.createElement("tr");
-                        // item.setAttribute("onclick", "switchToProfile(" + members[i]["userId"] + ")");
                         tableBody.appendChild(item);
                         item.innerHTML = "<td style=\"text-align:center vertical-align: middle;\">"
-                            + members[i]["firstName"][0].toUpperCase() + members[i]["firstName"].slice(1)
-                            + " " + members[i]["lastName"][0].toUpperCase() + members[i]["lastName"].slice(1) + "</td>"
-                            + "<td style=\"text-align:center vertical-align: middle;\" onclick='switchToProfile(" + members[i]["userId"] + ")'>" + members[i]["username"] + "</td><td>" + makeRemoveUserButton(members[i]["userId"]) + "</td>";
+                            + memberUsersInfo[i]["firstName"][0].toUpperCase() + memberUsersInfo[i]["firstName"].slice(1)
+                            + " " + memberUsersInfo[i]["lastName"][0].toUpperCase() + memberUsersInfo[i]["lastName"].slice(1) + "</td>"
+                            + "<td style=\"text-align:center vertical-align: middle;\" onclick='switchToProfile(" + memberUsersInfo[i]["userId"] + ")'>" + memberUsersInfo[i]["username"] + "</td><td>" + makeRemoveUserButton(memberUsersInfo[i]["userId"]) + "</td>";
                     }
                 }
             } else {
-                for (let i = 0; i < members.length; i++) {
+                for (let i = 0; i < memberUsersInfo.length; i++) {
                     let item = document.createElement("tr");
-                    item.setAttribute("onclick", "switchToProfile(" + members[i]["userId"] + ")");
+                    item.setAttribute("onclick", "switchToProfile(" + memberUsersInfo[i]["userId"] + ")");
                     tableBody.appendChild(item);
                     item.innerHTML = "<td style=\"text-align:center; vertical-align: middle;\">" +
-                        members[i]["firstName"][0].toUpperCase() + members[i]["firstName"].slice(1)
-                        + " " + members[i]["lastName"][0].toUpperCase() + members[i]["lastName"].slice(1) + "</td>"
-                        + "<td style=\"text-align:center; vertical-align: middle;\">" + members[i]["username"] + "</td>";
+                        memberUsersInfo[i]["firstName"][0].toUpperCase() + memberUsersInfo[i]["firstName"].slice(1)
+                        + " " + memberUsersInfo[i]["lastName"][0].toUpperCase() + memberUsersInfo[i]["lastName"].slice(1) + "</td>"
+                        + "<td style=\"text-align:center; vertical-align: middle;\">" + memberUsersInfo[i]["username"] + "</td>";
                 }
             }
-        })
+        });
     })
 }
 
@@ -539,33 +571,33 @@ function refresh() {
 
 function showRequests() {
     getGroupInfo(localStorage.getItem("groupId")).then(group => {
-        getRequests(group["requests"]).then(requests => {
-            localStorage.setItem("requests", JSON.stringify(requests));
+        getRequesters(group["requests"]).then(requesters => {
+            localStorage.setItem("requests", JSON.stringify(requesters));
             let tableBody = document.getElementById("requestTable");
             tableBody.innerHTML = "";
-            if (requests.length === 0)
+            if (requesters.length === 0)
                 tableBody.innerHTML = "<p>No new requests at this moment. </p>";
-            for (let i = 0; i < requests.length; i++) {
-                if (requests[i]["userId"].toString() !== localStorage.getItem("userId").toString()) {
+            for (let i = 0; i < requesters.length; i++) {
+
+                if (requesters[i]["userId"].toString() !== localStorage.getItem("userId").toString()) {
                     let item = document.createElement("tr");
-                    let requestId = getUserRequestId(requests[i]["userId"], localStorage.getItem("requests"));
+                    let requestId = getUserRequestId(requesters[i]["userId"], group["requests"]);
                     tableBody.appendChild(item);
                     item.innerHTML = "<td style=\"text-align:center; vertical-align: middle;\">"
-                        + requests[i]["firstName"][0].toUpperCase() + requests[i]["firstName"].slice(1)
-                        + " " + requests[i]["lastName"][0].toUpperCase() + requests[i]["lastName"].slice(1) + "</td>"
-                        + "<td style=\"text-align:center; vertical-align: middle;\" onclick='switchToProfile(" + requests[i]["userId"] + ")'>" + requests[i]["username"] + "</td> <td>" + makeAcceptButton(requestId) + " </td> <td>" + makeDeclineButton(requestId) + "</td>";
+                        + requesters[i]["firstName"][0].toUpperCase() + requesters[i]["firstName"].slice(1)
+                        + " " + requesters[i]["lastName"][0].toUpperCase() + requesters[i]["lastName"].slice(1) + "</td>"
+                        + "<td style=\"text-align:center; vertical-align: middle;\" onclick='switchToProfile(" + requesters[i]["userId"] + ")'>" + requesters[i]["username"] + "</td> <td>" + makeAcceptButton(requestId) + " </td> <td>" + makeDeclineButton(requestId) + "</td>";
 
                 }
             }
+        })
 
-        });
     })
 
 }
 
 function makeAcceptButton(id) {
     return "<button type=\"button\" id='acceptButton" + id + "' style='margin-top: 0.4rem;' class=\"btn btn-success\" onclick='acceptUser(" + id + ")'>Accept</button>";
-
 }
 
 function makeDeclineButton(id) {
@@ -649,20 +681,28 @@ function removeUser(id) {
 }
 
 function toggleBar() {
-    $("#wrapper").toggleClass("toggled");
+    getGroup(localStorage.getItem("groupId")).then(group => {
+        let badge = document.getElementById("requestBadge");
+        badge.classList.remove("badge-secondary", "badge-primary");
+        if (group["requests"].length === 0)
+            badge.classList.add("badge-secondary");
+        else badge.classList.add("badge-primary");
+        badge.innerHTML = group["requests"].length;
+        $("#wrapper").toggleClass("toggled");
+    });
+
 
 }
 
-function getRequests(requests) {
+function getRequesters(requests) {
 
     return getUsers(extractRequestUserIds(requests));
 }
 
 function getUserRequestId(userId, requests) {
-    let parsedRequests = JSON.parse(requests);
-    for (let i = 0; i < parsedRequests.length; i++) {
-        if (parsedRequests[i]["userId"].toString() === userId.toString())
-            return parsedRequests[i]["requestId"];
+    for (let i = 0; i < requests.length; i++) {
+        if (requests[i]["userId"].toString() === userId.toString())
+            return requests[i]["requestId"];
     }
 
 }
@@ -713,12 +753,8 @@ function extractRequestUserIds(userIds) {
 
 }
 
-function renameGroup() {
-
-}
-
 function changeGroupDescription() {
-    let newDescription = document.getElementById("inputDescription").value.toString();
+    let newDescription = document.getElementById("inputEditDescription").value.toString();
     let url = "http://localhost:8762/groupms/groups/" + localStorage.getItem("groupId") + "/user/" + localStorage.getItem("userId");
     let body = {
         description: newDescription
@@ -805,9 +841,9 @@ function addDescriptionModal() {
         "                                <p id=\"modalDescription\"></p>\n" +
         "                                <form>\n" +
         "                                    <div class=\"form-group\">\n" +
-        "                                        <label for=\"inputDescription\" class=\"control-label\" style=\"font-size:16px; font-weight:500;line-height:19.2px;\">New description:\n" +
+        "                                        <label for=\"inputEditDescription\" class=\"control-label\" style=\"font-size:16px; font-weight:500;line-height:19.2px;\">New description:\n" +
         "                                        </label>\n" +
-        "                                        <input type=\"text\" class=\"form-control\" id=\"inputDescription\"\n" +
+        "                                        <input type=\"text\" class=\"form-control\" id=\"inputEditDescription\"\n" +
         "                                               aria-describedby=\"emailHelp\">\n" +
         "                                    </div>\n" +
         "                                </form>\n" +
@@ -840,8 +876,8 @@ function addChangeNameModal() {
         "                                <p id=\"modalGroupName\"></p>\n" +
         "                                <form>\n" +
         "                                    <div class=\"form-group required\">\n" +
-        "                                        <label for=\"inputGroupName\" class=\"control-label\">New Name: </label>\n" +
-        "                                        <input type=\"text\" class=\"form-control\" id=\"inputGroupName\"\n" +
+        "                                        <label for=\"inputEditGroupName\" class=\"control-label\">New Name: </label>\n" +
+        "                                        <input type=\"text\" class=\"form-control\" id=\"inputEditGroupName\"\n" +
         "                                               aria-describedby=\"emailHelp\" \n" +
         "                                               oninput=\"validateNewName(false)\">\n" +
         "                                        <div class=\"invalid-feedback\" id=\"groupNameFeedback\">\n" +
@@ -865,7 +901,7 @@ function addChangeNameModal() {
 }
 
 function validateNewName(bool) {
-    let groupName = document.getElementById("inputGroupName");
+    let groupName = document.getElementById("inputEditGroupName");
     let feedback = document.getElementById("groupNameFeedback");
     let url = "http://localhost:8762/groupms/groups/name/" + groupName.value.toString();
 
@@ -920,7 +956,7 @@ function validateNewName(bool) {
 }
 
 function submitGroupName() {
-    let groupName = document.getElementById("inputGroupName").value.toString();
+    let groupName = document.getElementById("inputEditGroupName").value.toString();
     let url = "http://localhost:8762/groupms/groups/" + localStorage.getItem("groupId") + "/user/" + localStorage.getItem("userId");
     let body = {
         name: groupName
@@ -949,39 +985,6 @@ function sleep(milliseconds) {
             break;
         }
     }
-}
-
-function submitGroupCreation() {
-    validateNewName(false).then(whatever => {
-        let groupName = document.getElementById("inputGroupName");
-        if (groupName.classList.contains("is-valid")) {
-            let groupDescription = document.getElementById("inputDescription").value.toString();
-            let url = "http://localhost:8762/groupms/groups/";
-            let body = {
-                name: groupName.value.toString(),
-                description: groupDescription,
-                creatorId: localStorage.getItem("userId")
-            };
-            return fetch(url, {
-                headers: {
-                    'Authorization': "Bearer " + localStorage.getItem("token"),
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrer: 'no-referrer',
-                method: 'POST',
-                body: JSON.stringify(body)
-            }).then(returned => {
-                refresh();
-            }).catch(error => {
-                internalServerError(error);
-            })
-
-        }
-
-    })
-
 }
 
 $(window).resize(function () {

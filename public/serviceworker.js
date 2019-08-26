@@ -82,6 +82,6 @@ workbox.precaching.precacheAndRoute([
         "revision": "8f4ce310da36d8ccaf8f9b6bbb1df6da"
     },
     'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-    'https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js',
+    'https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js'
 ]);
 //

@@ -1,7 +1,10 @@
 function loadProfile() {
+    let ppcol = document.getElementById("profilePictureCol");
+    ppcol.innerHTML = "";
     let id = localStorage.getItem("profileId");
     let container = document.getElementById("profileContainer");
     let load = document.createElement("div");
+    let photoCount = 0;
     load.innerHTML = "<div class=\"d-flex justify-content-center\">\n" +
         "  <div class=\"spinner-border\" role=\"status\">\n" +
         "    <span class=\"sr-only\">Loading...</span>\n" +
@@ -31,43 +34,74 @@ function loadProfile() {
             bigRow.appendChild(col3);
 
             getUserFollowing(id).then(userFollowing => {
-                userCardContainer(userData, userPhotos.length, userFollowing);
+                makeFollowingModal(userFollowing);
                 container.appendChild(bigRow);
-                for (let i = 0; i < userPhotos.length; i++) {
-                    try {
-                        let smallContainer = document.createElement("div");
-                        smallContainer.classList.add("container");
-                        smallContainer.setAttribute("style", "    padding-right: 1%;" +
-                            " padding-left: 1%;");
-                        let smallRow = document.createElement("div");
-                        smallRow.classList.add("row", "mt-4");
-                        smallContainer.appendChild(smallRow);
-                        let smallCol = document.createElement("div");
-                        smallCol.classList.add("col-lg");
-                        smallRow.appendChild(smallCol);
-                        let card = document.createElement("div");
-                        card.classList.add("card");
-                        let img = document.createElement("img");
-                        img.setAttribute("src", "../images/" + userPhotos[i]["name"]);
-                        img.classList.add("img-fluid", "rounded", "card-img-top");
-                        card.appendChild(img);
-                        smallCol.appendChild(card);
-                        switch (i % 3) {
-                            case 0: //col1
-                                col1.appendChild(smallContainer);
-                                break;
-                            case 1: //col2
-                                col2.appendChild(smallContainer);
-                                break;
-                            case 2: //col3
-                                col3.appendChild(smallContainer);
-                                break;
+                userCardContainer(userData, userPhotos, userFollowing);
+                if (userPhotos.length === 0) {
+                    bigRow.setAttribute("style", "padding-left:10rem;");
+                    bigRow.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; padding-left: 30%'>This profile is empty!</h1>";
+                } else {
+                    for (let i = userPhotos.length; i > -1; i--) {
+                        try {
+                            let smallContainer = document.createElement("div");
+                            smallContainer.classList.add("container");
+                            smallContainer.setAttribute("style", "    padding-right: 1%;" +
+                                " padding-left: 1%;");
+                            let smallRow = document.createElement("div");
+                            smallRow.classList.add("row", "mt-4");
+                            smallContainer.appendChild(smallRow);
+                            let smallCol = document.createElement("div");
+                            smallCol.classList.add("col-lg");
+                            smallRow.appendChild(smallCol);
+                            let card = document.createElement("div");
+                            card.classList.add("card");
+                            let img = document.createElement("img");
+                            img.setAttribute("src", "../images/" + userPhotos[i]["name"]);
+                            img.classList.add("img-fluid", "rounded", "card-img-top");
+
+                            if (id.toString() === localStorage.getItem("userId")) {
+                                let button = document.createElement("button");
+                                button.classList.add("btn");
+                                button.setAttribute("type", "button");
+                                button.setAttribute("data-toggle", "modal");
+                                button.setAttribute("data-target", "#editPhotoModal");
+                                button.setAttribute("style", "padding:0; margin:0;");
+                                button.setAttribute("data-src", "../images/" + userPhotos[i]["name"]);
+                                if (userPhotos[i]["id"].toString() === userData["photoId"].toString()) {
+                                    button.setAttribute("data-id", "0");
+                                } else button.setAttribute("data-id", userPhotos[i]["id"]);
+                                button.appendChild(img);
+                                card.appendChild(button);
+
+                            } else {
+                                card.appendChild(img);
+                            }
+                            if (userPhotos[i]["groupId"].toString() === "0") {
+                                smallCol.appendChild(card);
+                                photoCount++;
+                            }
+
+                            switch (i % 3) {
+                                case 0: //col1
+                                    col1.appendChild(smallContainer);
+                                    break;
+                                case 1: //col2
+                                    col2.appendChild(smallContainer);
+                                    break;
+                                case 2: //col3
+                                    col3.appendChild(smallContainer);
+                                    break;
+                            }
+                        } catch (e) {
+
                         }
-                    } catch (e) {
-
                     }
+                    if (photoCount === 0) {
+                        bigRow.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; padding-left: 30%'>This profile is empty!</h1>";
+                    }
+                    let posts = document.getElementById("posts");
+                    posts.innerHTML = photoCount + " posts";
                 }
-
             }).catch(error => {
                     internalServerError(error);
                 }
@@ -113,13 +147,32 @@ function switchToProfile(id) {
     }
 }
 
-function userCardContainer(userData, numberOfUserPhotos, userFollowing) {
+function getUserProfilePicSrc(userData, userPhotos) {
+    let photoId = userData["photoId"];
+    for (let i = 0; i < userPhotos.length; i++) {
+        if (userPhotos[i]["id"].toString() === photoId.toString())
+            return userPhotos[i]["name"];
+    }
+
+}
+
+function userCardContainer(userData, userPhotos, userFollowing) {
+
+    if (userData["photoId"].toString() !== "0") {
+        let ppcol = document.getElementById("profilePictureCol");
+        let pp = document.createElement("img");
+        ppcol.appendChild(pp);
+        pp.setAttribute("alt", "...");
+        pp.setAttribute("style", "  width: 90px;\n" +
+            "  height: 90px;  border-radius: 50%; object-fit: cover;");
+        pp.setAttribute("src", "../images/" + getUserProfilePicSrc(userData, userPhotos));
+    }
 
     let name = document.getElementById("name");
     name.innerHTML = userData["firstName"][0].toUpperCase() + userData["firstName"].slice(1) + " " +
         userData["lastName"][0].toUpperCase() + userData["lastName"].slice(1);
     let posts = document.getElementById("posts");
-    posts.innerHTML = numberOfUserPhotos + " posts";
+    posts.innerHTML = userPhotos.length + " posts";
 
     let following = document.getElementById("following");
     following.innerHTML = userFollowing.length + " following";
@@ -170,11 +223,16 @@ function loadPersonalProfile() {
     switchToProfile(localStorage.getItem("userId"));
 }
 
-function followUser() {
+function followUser(userId = "0") {
     let id = localStorage.getItem("profileId");
     let url = "http://localhost:8762/userms/users/" + localStorage.getItem("userId");
-    let userList = {
-        follow: [id]
+    let userList;
+    if (userId === "0")
+        userList = {
+            follow: [id]
+        };
+    else userList = {
+        follow: [userId]
     };
     fetch(url, {
         headers: {
@@ -192,14 +250,20 @@ function followUser() {
 
 }
 
-function unfollowUser() {
+function unfollowUser(userId = "0") {
     let id = localStorage.getItem("profileId");
     console.log("unfollowed");
-
     let url = "http://localhost:8762/userms/users/" + localStorage.getItem("userId") + "/following";
-    let userList = {
-        unfollow: [id]
-    };
+    let userList;
+    if (userId === "0")
+        userList =
+            {
+                unfollow: [id]
+            };
+    else userList =
+        {
+            unfollow: [userId]
+        };
 
     fetch(url, {
         headers: {
@@ -268,4 +332,25 @@ function getUserFollowing(id) {
         .catch(error => {
             internalServerError(error);
         })
+}
+
+function makeFollowingModal(userFollowing) {
+    let table = document.getElementById("followingTableBody");
+    let modalBody = document.getElementById("followingModalBody");
+    if (userFollowing.length === 0) {
+        modalBody.innerHTML = "<h5>This user is not following anyone.</h5>"
+    } else {
+        for (let i = 0; i < userFollowing.length; i++) {
+            let element = document.createElement("tr");
+            element.setAttribute("onclick", "switchToProfile(" + userFollowing[i]["userId"]+")");
+            element.innerHTML = "<td>" +
+                userFollowing[i]["firstName"][0] + userFollowing[i]["firstName"].slice(1) + " "+
+                userFollowing[i]["lastName"][0] + userFollowing[i]["lastName"].slice(1)
+                + "</td>" + "<td>" +
+                userFollowing[i]["username"] + "</td>";
+            table.appendChild(element);
+
+        }
+    }
+
 }

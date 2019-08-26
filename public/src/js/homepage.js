@@ -1,4 +1,5 @@
 function getInitialFeed() {
+    loadUserPhotos(localStorage.getItem("userId"));
     localStorage.setItem("pageNumber", "0");
     localStorage.setItem("pageSize", "2");
     let container = document.getElementById("homepageContainer");
@@ -9,7 +10,14 @@ function getInitialFeed() {
         "</div>";
     loadFromAPI().then(response => {
             container.innerHTML = "";
-            addElementsToPage(response);
+            if (response.length === 0) {
+                container.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; margin-left: 25%'>Your homepage is empty!</h1>" +
+                    "<h4 style='margin-left: 25%'>Maybe try uploading some photos or following some users?</h4>"
+
+            } else {
+                addElementsToPage(response);
+            }
+
         }
     )
         .catch(error => {
@@ -43,7 +51,6 @@ function makeElementCard(imageResponse, col) {
     let img = document.createElement("img");
     img.setAttribute("src", "../images/" + imageResponse["name"]);
     img.classList.add("img-fluid", "rounded", "card-img-top");
-    card.appendChild(img);
     let timestamp = document.createElement("small");
     timestamp.innerHTML = getTimeStamp(imageResponse["timeStamp"]);
     let userLink;
@@ -72,6 +79,22 @@ function makeElementCard(imageResponse, col) {
                 }
             )
         }
+        if (imageResponse["userId"].toString() === localStorage.getItem("userId")) {
+            let button = document.createElement("button");
+            button.classList.add("btn");
+            button.setAttribute("type", "button");
+            button.setAttribute("data-toggle", "modal");
+            button.setAttribute("data-target", "#editPhotoModal");
+            button.setAttribute("style", "padding:0; margin:0;");
+            button.setAttribute("data-src", "../images/" + imageResponse["name"]);
+            button.setAttribute("data-id", imageResponse["id"]);
+            button.appendChild(img);
+            card.appendChild(button);
+            card.appendChild(button);
+        } else {
+            card.appendChild(img);
+        }
+
         card.appendChild(cardFooter);
         col.appendChild(card);
     })

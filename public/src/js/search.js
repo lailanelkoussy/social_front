@@ -26,9 +26,13 @@ function getSearchResults() {
 function generateUserDisplay(userResults) {
 
     let userTab = document.getElementById("userTab");
+    let userNumber = document.getElementById("userNumber");
+    userNumber.innerHTML = userResults.length;
 
     if (userResults.length === 0) {
-        userTab.innerHTML = "<div class='row'style='text-align: center; padding:2rem;'><div class='col'><h5>No users found</h5></div> </div>"
+        userNumber.classList.remove("badge-primary");
+        userNumber.classList.add("badge-secondary");
+        userTab.innerHTML = "<div class='row' style='text-align: center; padding:2rem;'><div class='col'><h5>No users found</h5></div> </div>"
 
     } else {
         let tableBody = document.getElementById("tableBody");
@@ -41,7 +45,7 @@ function generateUserDisplay(userResults) {
                 item.innerHTML = "<td style=\"text-align:center\">" +
                     userResults[i]["firstName"][0].toUpperCase() + userResults[i]["firstName"].slice(1) + " "
                     + userResults[i]["lastName"][0].toUpperCase() + userResults[i]["lastName"].slice(1) + "</td>"
-                    + "<td style=\"text-align:center;\">" + userResults[i]["username"] + "</td>";
+                    + "<td style=\"text-align:center;\"><a style='color: black; font-weight: 600; text-decoration: none;'>" + userResults[i]["username"] + "</a></td>";
             }
         }
     }
@@ -49,7 +53,11 @@ function generateUserDisplay(userResults) {
 
 function generateGroupDisplay(groupResults) {
     let groupTab = document.getElementById("groupTab");
+    let groupNumber = document.getElementById("groupNumber");
+    groupNumber.innerHTML = groupResults.length;
     if (groupResults.length === 0) {
+        groupNumber.classList.remove("badge-primary");
+        groupNumber.classList.add("badge-secondary");
         groupTab.innerHTML = "<div class='row' style='text-align: center; padding:2rem;'><div class='col'><h5>No groups found</h5></div> </div>";
     } else {
         let tableBody = document.getElementById("groupTableBody");
@@ -58,7 +66,8 @@ function generateGroupDisplay(groupResults) {
                 let item = document.createElement("tr");
                 item.setAttribute("onclick", "switchToGroup(" + groupResults[i]["id"] + ")");
                 tableBody.appendChild(item);
-                item.innerHTML = "<td style=\"text-align:center\">" + groupResults[i]["name"] + "</td>"
+                item.innerHTML = "<td style=\"text-align:center\"><a href='#' style='color:black; text-decoration: none;'></a>" + groupResults[i]["name"][0].toUpperCase() +
+                    groupResults[i]["name"].slice(1)+ "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["description"] + "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["members"].length + "</td>";
             }
@@ -171,10 +180,13 @@ function getGroup(id) {
 
 function generatePhotoDisplay(photoResults) {
     let photoDiv = document.getElementById("photoTab");
+    let photoNumber = document.getElementById("photoNumber");
+    photoNumber.innerHTML = photoResults.length;
 
     if (photoResults.length === 0) {
-        photoDiv.innerHTML = "<div class='row'style='text-align: center; padding:2rem;'><div class='col'><h5>No photos found</h5></div> </div>"
-
+        photoDiv.innerHTML = "<div class='row' style='text-align: center; padding:2rem;'><div class='col'><h5>No photos found</h5></div> </div>"
+        photoNumber.classList.remove("badge-primary");
+        photoNumber.classList.add("badge-secondary");
     } else {
         let bigRow = document.createElement("div");
         photoDiv.appendChild(bigRow);

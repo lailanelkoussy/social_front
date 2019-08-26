@@ -53,7 +53,8 @@
                 <img src="../images/logos/create-group-button.png" alt="..">
             </button>
             <div class="dropdown">
-                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="modal" data-target="#photoUploadModal"
+                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="modal"
+                        data-target="#photoUploadModal"
                         aria-haspopup="true" aria-expanded="false" style=" margin-right: 1rem;">
                     <img src="../images/logos/add-picture.png"
                          alt="..">
@@ -65,6 +66,10 @@
     </div>
 </nav>
 <div id="profileContainer" class="container-fluid">
+    <div class="row">
+        <div class="col-4" id="profilePictureCol" style="padding-left: 42.5%">
+        </div>
+    </div>
     <div class="row ">
         <div class="col-md-5 offset-md-3">
             <div class="row mt-2 text-center" id="userRow">
@@ -87,7 +92,7 @@
                     <p id="posts" style="margin-bottom:0;"></p>
                 </div>
                 <div class="col-4" id="userCol3">
-                    <p id="following" style="margin-bottom:0;"></p>
+                    <a id="following" style="margin-bottom:0; color: black; font-weight: 600; text-decoration: none;" href="#" data-toggle="modal" data-target="#userFollowingModal"></a>
                 </div>
             </div>
             <div class="row mt-2 text-center" id="followButtonRow">
@@ -98,102 +103,141 @@
         </div>
     </div>
 
-    <div class="modal fade" id="photoUploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Upload photo</h5>
-                    <button type="button" class="close" data-dismiss="modal" onclick="refresh()"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="row" style=" align-items: center; vertical-align: middle;">
-                            <div class="col-md-4" style=" align-items: center;" id="buttonCol">
-                                <div class="form-group" style=" align-items: center; display: flex;">
-                                    <input type="file" class="form-control-file" id="uploadedPhoto" accept="image/*"
-                                           style="display: none;" onchange="previewPhoto(this)"/>
-                                    <input type="button" value="Choose Photo"
-                                           onclick="document.getElementById('uploadedPhoto').click();"/>
-                                </div>
+</div>
+<div class="modal fade" id="photoUploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload photo</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row" style=" align-items: center; vertical-align: middle;">
+                        <div class="col-md-4" style=" align-items: center;" id="buttonCol">
+                            <div class="form-group" style=" align-items: center; display: flex;">
+                                <input type="file" class="form-control-file" id="uploadedPhoto" accept="image/*"
+                                       style="display: none;" onchange="previewPhoto(this)"/>
+                                <input type="button" value="Choose Photo"
+                                       onclick="document.getElementById('uploadedPhoto').click();"/>
                             </div>
-                            <div class="col-md-2" id="middleCol"></div>
-                            <div class="col-md-6" style=" align-items: center;" id="imgCol">
+                        </div>
+                        <div class="col-md-2" id="middleCol"></div>
+                        <div class="col-md-6" style=" align-items: center;" id="imgCol">
 
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group" style=" padding-top:0.5rem;">
-                            <label for="photoName">Photo Name</label>
-                            <input type="text" class="form-control" id="photoName"
-                                   placeholder="mycat" oninput="validatePhotoName()">
-                            <div class="invalid-feedback" id="photoNameFeedback">
-                            </div>
+                    <div class="form-group" style=" padding-top:0.5rem;">
+                        <label for="photoName">Photo Name</label>
+                        <input type="text" class="form-control" id="photoName"
+                               placeholder="mycat" oninput="validatePhotoName()">
+                        <div class="invalid-feedback" id="photoNameFeedback">
                         </div>
-                        <div class="form-group" style=" padding-top:0.5rem; padding-bottom: 0.5rem;">
-                            <label for="hashtagName">Hashtag</label>
-                            <input type="text" class="form-control" id="hashtagName"
-                                   placeholder="cute" oninput="validateHashtagName()">
-                            <div class="invalid-feedback" id="hashtagNameFeedback">
-                            </div>
+                    </div>
+                    <div class="form-group" style=" padding-top:0.5rem; padding-bottom: 0.5rem;">
+                        <label for="hashtagName">Hashtag</label>
+                        <input type="text" class="form-control" id="hashtagName"
+                               placeholder="cute" oninput="validateHashtagName()">
+                        <div class="invalid-feedback" id="hashtagNameFeedback">
                         </div>
-                        <div class="form-group">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="inputGroupSelect01">Upload to group?</label>
-                                </div>
-                                <select class="custom-select" id="inputGroupSelect01">
-                                    <option selected value="0">Upload to Profile</option>
-                                </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Upload to group?</label>
                             </div>
+                            <select class="custom-select" id="inputGroupSelect01">
+                                <option selected value="0">Upload to Profile</option>
+                            </select>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">
-                        Close
-                    </button>
-                    <button type="button" class="btn btn-primary"  id="uploadButton" onclick="validateAll()">Upload</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" id="uploadButton" onclick="validateAll()">Upload</button>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" >Create New Group</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group required">
-                            <label for="inputGroupName" class="control-label">Name:</label>
-                            <input type="text" class="form-control" id="inputGroupName" aria-describedby="emailHelp" oninput="validateNewName(false)" placeholder="Pick a name for your group">
-                            <div class="invalid-feedback" id="groupNameFeedback">
-                            </div>
+</div>
+<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group required">
+                        <label for="inputGroupNameCreation" class="control-label">Name:</label>
+                        <input type="text" class="form-control" id="inputGroupNameCreation"
+                               aria-describedby="emailHelp"
+                               oninput="validateNewGroupCreationName()" placeholder="Pick a name for your group">
+                        <div class="invalid-feedback" id="groupNameCreationFeedback">
                         </div>
-                        <div class="form-group">
-                            <label for="inputDescription" class="control-label">Description: </label>
-                            <input type="text" class="form-control" id="inputDescription" placeholder="Describe what your group is about...">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitGroupCreation()">Create Group</button>
-                </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCreationDescription" class="control-label">Description: </label>
+                        <input type="text" class="form-control" id="inputCreationDescription"
+                               placeholder="Describe what your group is about...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitGroupCreation()"
+                        id="createGroupButton">Create Group
+                </button>
             </div>
         </div>
     </div>
-
+</div>
+<div class="modal fade" id="userFollowingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Following</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="followingModalBody">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Username</th>
+                    </tr>
+                    </thead>
+                    <tbody id="followingTableBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>
+    td {
+        cursor: pointer;
+    }
+</style>
 
 </body>
 </html>

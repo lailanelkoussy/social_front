@@ -19,14 +19,15 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script src="../js/sessionCheck.js"></script>
-    <script src="../js/uploadPhoto.js"></script>
+    <script src="../js/homepage.js"></script>
     <script src="../js/profile.js"></script>
     <script src="../js/search.js"></script>
     <script src="../js/groups.js"></script>
+    <script src="../js/uploadPhoto.js"></script>
     <script src="../js/common.js"></script>
     <title>Groups </title>
 </head>
-<body onload="checkIfLoggedOut(); loadGroup(); makeGroupDropDown()">
+<body onload="checkIfLoggedOut(); loadGroup();">
 
 <nav class="navbar navbar-expand-md sticky-top navbar-light bg-white">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -52,13 +53,13 @@
             <button type="button" class="btn" data-toggle="modal" data-target="#createGroupModal">
                 <img src="../images/logos/create-group-button.png" alt="..">
             </button>
-            <div class="dropdown">
-                <button type="button" class="btn" id="dropdownMenuButton" data-toggle="modal" data-target="#photoUploadModal"
-                        aria-haspopup="true" aria-expanded="false" style=" margin-right: 1rem;">
-                    <img src="../images/logos/add-picture.png"
-                         alt="..">
-                </button>
-            </div>
+            <button type="button" class="btn" id="dropdownMenuButton" data-toggle="modal"
+                    data-target="#photoUploadModal"
+                    aria-haspopup="true" aria-expanded="false" style=" margin-right: 1rem;">
+                <img src="../images/logos/add-picture.png"
+                     alt="..">
+            </button>
+
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchQuery">
             <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="search()">Search</button>
         </form>
@@ -116,7 +117,34 @@
             <div id="memberModalWrapper"></div>
             <div id="requestModalWrapper"></div>
             <div id="descriptionModalWrapper"></div>
-            <div id="changeNameModalWrapper">
+            <div id="changeNameModalWrapper"></div>
+            <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete Photo</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col offset-md-3" style="align-content: center">
+                                    <img id="modalImage" style="max-width: 250px; align-self: center">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" id="deletePhotoButton"
+                                    style="align-self: center">
+                                Delete
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal fade" id="photoUploadModal" tabindex="-1" role="dialog"
                  aria-labelledby="exampleModalLabel"
@@ -124,8 +152,8 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Upload photo</h5>
-                            <button type="button" class="close" data-dismiss="modal" onclick="refresh()"
+                            <h5 class="modal-title" id="exampleModalLabel">Upload photo to group</h5>
+                            <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -162,65 +190,72 @@
                                     <div class="invalid-feedback" id="hashtagNameFeedback">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text" for="inputGroupSelect01">Upload to
-                                                group?</label>
-                                        </div>
-                                        <select class="custom-select" id="inputGroupSelect01">
-                                            <option selected value="0">Upload to Profile</option>
-                                        </select>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="button" class="btn btn-primary" id="uploadButton"
+                                    onclick="validateAllFromGroup()">Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create New Group</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group required">
+                                    <label for="inputGroupNameCreation" class="control-label">Name:</label>
+                                    <input type="text" class="form-control" id="inputGroupNameCreation"
+                                           aria-describedby="emailHelp"
+                                           oninput="validateNewGroupCreationName()" placeholder="Pick a name for your group">
+                                    <div class="invalid-feedback" id="groupNameCreationFeedback">
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCreationDescription" class="control-label">Description: </label>
+                                    <input type="text" class="form-control" id="inputCreationDescription"
+                                           placeholder="Describe what your group is about...">
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">
-                                Close
-                            </button>
-                            <button type="button" class="btn btn-primary" id="uploadButton" onclick="validateAll()">
-                                Upload
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="submitGroupCreation()"
+                                    id="createGroupButton">Create Group
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create New Group</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group required">
-                            <label for="inputGroupName" class="control-label">Name:</label>
-                            <input type="text" class="form-control" id="inputGroupName" aria-describedby="emailHelp" oninput="validateNewName(false)" placeholder="Pick a name for your group">
-                            <div class="invalid-feedback" id="groupNameFeedback">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputDescription" class="control-label">Description: </label>
-                            <input type="text" class="form-control" id="inputDescription" placeholder="Describe what your group is about...">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitGroupCreation()">Create Group</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        <script>
+            $('#editPhotoModal').on('show.bs.modal', function (event) {
 
-    <!-- /#page-content-wrapper -->
+                let button = $(event.relatedTarget);// Button that triggered the modal
+                let src = button.data('src'); // Extract info from data-* attributes
+                let id = button.data('id');
+                let img = document.getElementById("modalImage");
+                img.setAttribute("src", src);
+                let deleteButton = document.getElementById("deletePhotoButton");
+                deleteButton.setAttribute("onclick", "deletePhoto(" + id + ")");
 
+            })
+        </script>
+
+    </div>
 </div>
 </body>
 </html>

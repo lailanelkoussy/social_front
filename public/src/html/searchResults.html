@@ -63,7 +63,6 @@
         </form>
     </div>
 </nav>
-
 <div class="row">
     <div class="col">
         <div class="card">
@@ -72,15 +71,22 @@
                     <li class="nav-item">
                         <a class="nav-link active" id="photoLink" data-toggle="tab" href="#photoTab" role="tab"
                            aria-controls="home"
-                           aria-selected="true">Photos</a>
+                           aria-selected="true"
+                        style="color:black;">Photos
+                            <span class="badge badge-primary" id="photoNumber"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#userTab" role="tab"
-                           aria-controls="profile" aria-selected="false">Users</a>
+                           style="color:black;"
+                           aria-controls="profile" aria-selected="false">Users <span class="badge badge-primary" id="userNumber"></span></a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#groupTab" role="tab"
-                           aria-controls="contact" aria-selected="false">Groups</a>
+                           style="color:black;"
+                           aria-controls="contact" aria-selected="false">Groups
+                            <span class="badge badge-primary" id="groupNumber"></span>
+                            </a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -124,7 +130,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Upload photo</h5>
-                <button type="button" class="close" data-dismiss="modal" onclick="refresh()"
+                <button type="button" class="close" data-dismiss="modal"
                         aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -173,7 +179,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refresh()">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Close
                 </button>
                 <button type="button" class="btn btn-primary"  id="uploadButton" onclick="validateAll()">Upload</button>
@@ -181,7 +187,9 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -193,24 +201,34 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group required">
-                        <label for="inputGroupName" class="control-label">Name:</label>
-                        <input type="text" class="form-control" id="inputGroupName" aria-describedby="emailHelp" oninput="validateNewName(false)" placeholder="Pick a name for your group">
-                        <div class="invalid-feedback" id="groupNameFeedback">
+                        <label for="inputGroupNameCreation" class="control-label">Name:</label>
+                        <input type="text" class="form-control" id="inputGroupNameCreation"
+                               aria-describedby="emailHelp"
+                               oninput="validateNewGroupCreationName()" placeholder="Pick a name for your group">
+                        <div class="invalid-feedback" id="groupNameCreationFeedback">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputDescription" class="control-label">Description: </label>
-                        <input type="text" class="form-control" id="inputDescription" placeholder="Describe what your group is about...">
+                        <label for="inputCreationDescription" class="control-label">Description: </label>
+                        <input type="text" class="form-control" id="inputCreationDescription"
+                               placeholder="Describe what your group is about...">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="submitGroupCreation()">Create Group</button>
+                <button type="button" class="btn btn-primary" onclick="submitGroupCreation()"
+                        id="createGroupButton">Create Group
+                </button>
             </div>
         </div>
     </div>
 </div>
+<style>
+    td {
+        cursor: pointer;
+    }
+</style>
 
 
 </body>

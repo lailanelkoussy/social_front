@@ -119,10 +119,41 @@ function validateAll() {
     }
 }
 
+function validateAllFromProfile(){
+    let uploadButton = document.getElementById("uploadButton");
+    uploadButton.disabled = true;
+    uploadButton.innerHTML = "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>\n" +
+        "        <span class=\"sr-only\">Uploading...</span>";
+
+    if (validatePhotoName && validateHashtagName() && validatePhotoInput()) {
+            uploadPhoto();
+    } else {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = "Upload";
+    }
+
+}
+
+function validateAllFromGroup(){
+    let uploadButton = document.getElementById("uploadButton");
+    uploadButton.disabled = true;
+    uploadButton.innerHTML = "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>\n" +
+        "        <span class=\"sr-only\">Uploading...</span>";
+
+    if (validatePhotoName && validateHashtagName() && validatePhotoInput()) {
+        uploadPhotoToGroup(localStorage.getItem("groupId"));
+    } else {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = "Upload";
+    }
+
+}
+
 function previewPhoto(element) {
     if (element.files && element.files[0]) {
         let reader = new FileReader();
         let col = document.getElementById("imgCol");
+        col.innerHTML = "";
         let img = document.createElement("img");
         img.setAttribute("alt", "...");
         img.setAttribute("id", "previewImg");
