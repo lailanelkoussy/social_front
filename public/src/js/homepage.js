@@ -21,6 +21,7 @@ function getInitialFeed() {
         }
     )
         .catch(error => {
+            container.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; margin-left: 25%'>Uh oh! Could not load homepage content...</h1>";
             internalServerError(error);
         })
 }

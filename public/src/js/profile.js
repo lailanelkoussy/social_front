@@ -81,7 +81,7 @@ function loadProfile() {
                                 photoCount++;
                             }
 
-                            switch (i % 3) {
+                            switch ((userPhotos.length - i - 1) % 3) {
                                 case 0: //col1
                                     col1.appendChild(smallContainer);
                                     break;
@@ -342,9 +342,9 @@ function makeFollowingModal(userFollowing) {
     } else {
         for (let i = 0; i < userFollowing.length; i++) {
             let element = document.createElement("tr");
-            element.setAttribute("onclick", "switchToProfile(" + userFollowing[i]["userId"]+")");
+            element.setAttribute("onclick", "switchToProfile(" + userFollowing[i]["userId"] + ")");
             element.innerHTML = "<td>" +
-                userFollowing[i]["firstName"][0] + userFollowing[i]["firstName"].slice(1) + " "+
+                userFollowing[i]["firstName"][0] + userFollowing[i]["firstName"].slice(1) + " " +
                 userFollowing[i]["lastName"][0] + userFollowing[i]["lastName"].slice(1)
                 + "</td>" + "<td>" +
                 userFollowing[i]["username"] + "</td>";

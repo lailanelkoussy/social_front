@@ -6,12 +6,19 @@ function switchToGroup(groupId) {
 function loadGroup() {
     let id = localStorage.getItem("groupId");
     let container = document.getElementById("groupContainer");
+    let bigRow = document.createElement("div");
+    container.appendChild(bigRow);
+    bigRow.innerHTML = "<div class=\"d-flex justify-content-center\">\n" +
+        "  <div class=\"spinner-border\" role=\"status\">\n" +
+        "    <span class=\"sr-only\">Loading...</span>\n" +
+        "  </div>\n" +
+        "</div>";
     makeGroupInfoBar(id);
     addMembersModal();
     getGroupContent(id).then(groupPhotos => {
 
-        let bigRow = document.createElement("div");
         bigRow.classList.add("row");
+        bigRow.innerHTML = "";
         let col1 = document.createElement("div");
         let col2 = document.createElement("div");
         let col3 = document.createElement("div");
@@ -28,7 +35,6 @@ function loadGroup() {
         bigRow.appendChild(col2);
         bigRow.appendChild(col3);
 
-        container.appendChild(bigRow);
         if (groupPhotos.length === 0) {
             bigRow.innerHTML = "<h1 style='padding-top: 5rem;font-weight: bold; margin-left:30%;'>This group is empty!</h1>";
         } else {
@@ -70,7 +76,8 @@ function loadGroup() {
     })
         .catch(error => {
                 internalServerError(error);
-                window.location.href = "../html/groups.html";
+                bigRow.innerHTML = "<h5 style='padding-top: 5rem;font-weight: bold; margin-left:30%;'>Uh oh! Could not load group content...</h5>";
+
             }
         )
 
@@ -415,6 +422,7 @@ function getGroupContent(id) {
     }).then(returned => returned)
         .then(returnedjson => returnedjson.json())
         .catch(error => {
+
             internalServerError(error);
         })
 }

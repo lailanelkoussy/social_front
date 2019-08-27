@@ -1,7 +1,9 @@
 function search() {
     let query = document.getElementById("searchQuery").value.toString();
-    localStorage.setItem("search", query);
-    window.location.href = "../html/searchResults.html";
+    if (query.length !== 0) {
+        localStorage.setItem("search", query);
+        window.location.href = "../html/searchResults.html";
+    }
 
 }
 
@@ -67,7 +69,7 @@ function generateGroupDisplay(groupResults) {
                 item.setAttribute("onclick", "switchToGroup(" + groupResults[i]["id"] + ")");
                 tableBody.appendChild(item);
                 item.innerHTML = "<td style=\"text-align:center\"><a href='#' style='color:black; text-decoration: none;'></a>" + groupResults[i]["name"][0].toUpperCase() +
-                    groupResults[i]["name"].slice(1)+ "</td>"
+                    groupResults[i]["name"].slice(1) + "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["description"] + "</td>"
                     + "<td style=\"text-align:center\">" + groupResults[i]["members"].length + "</td>";
             }
